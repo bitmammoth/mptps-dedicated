@@ -78,11 +78,6 @@ var ray_ledge_top
 var ray_ledge_front
 var ray_vehicles
 
-# Vehicles
-var vehicle
-
-# Weapons
-var equipped_weapon
 
 func _ready():
 	shape = get_node("shape")
@@ -194,64 +189,7 @@ func process_input(delta):
 		if is_grounded:
 			if Input.is_action_just_pressed("jump"):
 				vel.y = JUMP_SPEED
-		
-		# Dancing
-		if is_grounded:
-			if Input.is_action_pressed("dance"):
-				is_dancing = true
-			if Input.is_action_just_released("dance"):
-				is_dancing = false
-		
-		# Enter vehicle
-		if Input.is_action_just_pressed("enter_vehicle"):
-			rpc("enter_vehicle")
-		
-		# Change weapon
-		if Input.is_action_just_released("next_weapon"):
-			rpc("toggle_weapon")
-		
-		# Dealing with weapons
-		if equipped_weapon != null:
-			if weapon_equipped:
-				if Input.is_action_just_pressed("lmb") and is_aiming:
-					equipped_weapon.rpc("fire")
-				if Input.is_action_just_pressed("reload"):
-					equipped_weapon.rpc("reload")
-				if Input.is_action_just_pressed("drop"):
-					equipped_weapon.rpc("drop")
-		
-		# Aiming
-		var camera_target = camera_target_initial
-		var crosshair_alpha = 0.0
-		var fov = fov_initial
-		if Input.is_action_pressed("rmb"):
-			camera_target.x = -1.25
-			crosshair_alpha = 1.0
-			fov = 60
-			is_aiming = true
-		if Input.is_action_just_released("rmb"):
-			is_aiming = false
-		target.transform.origin.x += (camera_target.x - target.transform.origin.x) * 0.15
-		crosshair.modulate.a += (crosshair_alpha - crosshair.modulate.a) * 0.15
-		camera.fov += (fov - camera.fov) * 0.15
-		
-		# Force
-		if is_aiming:
-			if !weapon_equipped:
-				var space_state = get_world().direct_space_state
-				var center_position = get_viewport().size / 2
-				var ray_from = camera.project_ray_origin(center_position)
-				var ray_to = ray_from + camera.project_ray_normal(center_position) * GRAB_DISTANCE
-				var ray_result = space_state.intersect_ray(ray_from, ray_to, [self])
-				if ray_result:
-					if ray_result.collider:
-						var body = ray_result.collider
-						if body is RigidBody:
-							if Input.is_action_just_pressed("lmb") and is_grounded:
-								force_player.stream = force_shoot
-								force_player.play()
-								body.apply_impulse(Vector3(0, 0, 0), -camera.global_transform.basis.z.normalized() * THROW_FORCE)
-	
+
 	# Slow Mo
 	if Input.is_action_pressed("slowmo"):
 		Engine.time_scale = 0.25
@@ -348,103 +286,12 @@ func process_movement(delta):
 	# Network
 	rpc_unreliable("update_trans_rot", translation, rotation, shape.rotation)
 
-# Check for weapons
-remotesync func check_weapons():
-	var weapons = get_node("shape/cube/root/skeleton/bone_attachment/weapon").get_children()
-	if weapons.size() > 0:
-		equipped_weapon = weapons[0]
-	else:
-		equipped_weapon = null
-
-remotesync func toggle_weapon():
-	if equipped_weapon != null:
-		if weapon_equipped == true:
-			weapon_equipped = false
-			get_node("shape/cube/root/skeleton/bone_attachment/weapon").visible = false
-		else:
-			weapon_equipped = true
-			get_node("shape/cube/root/skeleton/bone_attachment/weapon").visible = true
-
-# Entering vehicle
-remotesync func enter_vehicle():
-	if !is_in_vehicle:
-		if ray_vehicles.is_colliding():
-			if ray_vehicles.get_collider() is VehicleBody and ray_vehicles.get_collider().driver == null:
-				camera.translation = Vector3(0, 0, 6)
-				vehicle = ray_vehicles.get_collider()
-				get_parent().remove_child(self)
-				vehicle.add_child(self)
-				shape.disabled = true
-				
-				if vehicle.driver == null:
-					global_transform.origin = vehicle.transform.origin + vehicle.transform.basis.x * 0.5 + vehicle.transform.basis.y * 1.75
-				else:
-					global_transform.origin = vehicle.transform.origin + vehicle.transform.basis.x * -0.5 + vehicle.transform.basis.y * 1.75
-				
-				vehicle.driver = self
-				vehicle.set_network_master(int(self.get_name()))
-				shape.rotation.y = vehicle.get_node("body").transform.basis.get_euler().y
-				
-				is_in_vehicle = true
-				# Temporary
-				camera.clip_to_bodies = false
-	else:
-		animation_state_machine.travel("blend_tree")
-		get_parent().remove_child(self)
-		main_scn.add_child(self)
-		shape.disabled = false
-		camera.translation = Vector3(0, 0, 2)
-		
-		global_transform.origin = vehicle.transform.origin + vehicle.transform.basis.x * 2 + vehicle.transform.basis.y * 1
-		shape.rotation.y = vehicle.transform.basis.get_euler().y
-		
-		vel = vehicle.linear_velocity * 1.5
-
-		vehicle.driver = null
-		vehicle = null
-		is_in_vehicle = false
-		# Temporary
-		camera.clip_to_bodies = true
 
 # Animations
-remotesync func process_animations(is_in_vehicle, is_grounded, is_climbing, is_dancing, is_aiming, pistol_equipped, hvel_length, camera_x_rot, camera_y_rot):
-	if is_in_vehicle:
-		animation_state_machine.travel("car_drive")
-	else:
+remotesync func process_animations(is_grounded, hvel_length, camera_x_rot, camera_y_rot):
 		animation_tree["parameters/blend_tree/locomotion/idle_walk_run/blend_position"] = hvel_length
 		if !is_grounded and !is_on_floor():
 			animation_state_machine.travel("fall")
-		else:
-			if is_climbing:
-				animation_state_machine.travel("climb")
-			else:
-				if !is_dancing:
-					animation_state_machine.travel("blend_tree")
-				else:
-					animation_state_machine.travel("dance")
-
-	if is_aiming:
-		if weapon_equipped:
-			animation_tree["parameters/blend_tree/pistol_aim_blend/blend_amount"] = 1
-			animation_tree["parameters/blend_tree/pistol_aim_dir_x_blend/blend_amount"] = -camera_x_rot
-			animation_tree["parameters/blend_tree/pistol_aim_dir_y_blend/blend_amount"] = camera_y_rot
-		else:
-			animation_tree["parameters/blend_tree/aim_blend/blend_amount"] = 1
-			animation_tree["parameters/blend_tree/aim_dir_x_blend/blend_amount"] = -camera_x_rot
-			animation_tree["parameters/blend_tree/aim_dir_y_blend/blend_amount"] = camera_y_rot
-	else:
-		if weapon_equipped:
-			animation_tree["parameters/blend_tree/pistol_aim_blend/blend_amount"] = 0
-		else:
-			animation_tree["parameters/blend_tree/aim_blend/blend_amount"] = 0
-
-
-func set_is_climbing(value):
-	is_climbing = value
-	rpc("update_is_climbing", value)
-
-remotesync func update_is_climbing(value):
-	is_climbing = value
 
 # Sync position and rotation in the network
 puppet func update_trans_rot(pos, rot, shape_rot):
