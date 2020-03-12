@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://ChatServer.tscn" type="PackedScene" id=1]
+
+
+
+
+[node name="Root" type="Node"]
+
+[node name="ChatServer" parent="." instance=ExtResource( 1 )]

@@ -1,0 +1,17 @@
+[gd_scene format=2]
+
+[node name="map" type="Spatial"]
+
+[node name="spawn_points" type="Node" parent="."]
+
+[node name="point_1" type="Position3D" parent="spawn_points"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.23465, 2 )
+
+[node name="point_2" type="Position3D" parent="spawn_points"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4.27771, 2.23465, 2 )
+
+[node name="point_3" type="Position3D" parent="spawn_points"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4.27771, 2.23465, 4.96922 )
+
+[node name="point_4" type="Position3D" parent="spawn_points"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0402083, 2.23465, 4.96922 )

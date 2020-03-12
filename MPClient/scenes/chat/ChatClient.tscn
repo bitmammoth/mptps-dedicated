@@ -1,0 +1,113 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://client/client.gd" type="Script" id=1]
+[ext_resource path="res://client/client_ui.gd" type="Script" id=2]
+
+[sub_resource type="Theme" id=1]
+
+[sub_resource type="StyleBoxFlat" id=2]
+bg_color = Color( 0.6, 0.6, 0.6, 0 )
+border_width_left = 7
+border_width_top = 3
+border_width_right = 7
+border_width_bottom = 3
+border_color = Color( 0.509804, 0.313726, 0.313726, 1 )
+
+[node name="ChatClient" type="Node"]
+
+[node name="Client" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 4.0
+margin_top = 421.0
+margin_right = -659.0
+margin_bottom = -6.0
+theme = SubResource( 1 )
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Panel" type="Panel" parent="Client"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -1.0
+margin_bottom = -1.0
+custom_styles/panel = SubResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Client/Panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Connect" type="HBoxContainer" parent="Client/Panel/VBoxContainer"]
+margin_right = 361.0
+
+[node name="Host" type="LineEdit" parent="Client/Panel/VBoxContainer/Connect"]
+visible = false
+margin_right = 293.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+text = "ws://localhost:8000/test/"
+placeholder_text = "ws://my.server/path/"
+
+[node name="Connect" type="Button" parent="Client/Panel/VBoxContainer/Connect"]
+visible = false
+margin_right = 64.0
+margin_bottom = 20.0
+toggle_mode = true
+text = "Connect"
+
+[node name="Settings" type="HBoxContainer" parent="Client/Panel/VBoxContainer"]
+visible = false
+margin_top = 24.0
+margin_right = 361.0
+margin_bottom = 24.0
+
+[node name="Mode" type="OptionButton" parent="Client/Panel/VBoxContainer/Settings"]
+visible = false
+margin_right = 29.0
+margin_bottom = 24.0
+
+[node name="Multiplayer" type="CheckBox" parent="Client/Panel/VBoxContainer/Settings"]
+visible = false
+margin_right = 126.0
+margin_bottom = 24.0
+pressed = true
+text = "Multiplayer API"
+
+[node name="Destination" type="OptionButton" parent="Client/Panel/VBoxContainer/Settings"]
+visible = false
+margin_right = 29.0
+margin_bottom = 20.0
+
+[node name="Send" type="HBoxContainer" parent="Client/Panel/VBoxContainer"]
+margin_top = 4.0
+margin_right = 361.0
+margin_bottom = 28.0
+
+[node name="LineEdit" type="LineEdit" parent="Client/Panel/VBoxContainer/Send"]
+margin_right = 314.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+placeholder_text = "Enter some text to send..."
+
+[node name="Send" type="Button" parent="Client/Panel/VBoxContainer/Send"]
+margin_left = 318.0
+margin_right = 361.0
+margin_bottom = 24.0
+text = "Send"
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Client/Panel/VBoxContainer"]
+margin_top = 32.0
+margin_right = 361.0
+margin_bottom = 173.0
+size_flags_vertical = 3
+
+[node name="Client" type="Node" parent="Client"]
+script = ExtResource( 1 )
+[connection signal="toggled" from="Client/Panel/VBoxContainer/Connect/Connect" to="Client" method="_on_Connect_toggled"]
+[connection signal="item_selected" from="Client/Panel/VBoxContainer/Settings/Mode" to="Client" method="_on_Mode_item_selected"]
+[connection signal="pressed" from="Client/Panel/VBoxContainer/Send/Send" to="Client" method="_on_Send_pressed"]
