@@ -43,7 +43,7 @@ func _on_connected_to_server():
 	var player = player_scn.instance()
 	player.set_name(str(my_id))
 	world.get_node("players").add_child(player)
-	player.get_node("head/camera").current = true
+	player.get_node("camera_base/rotation/target/camera").current = true
 	me_created = true
 
 func _on_server_disconnected():

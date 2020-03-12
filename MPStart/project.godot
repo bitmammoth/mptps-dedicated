@@ -9,12 +9,24 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "ResourceFormatLoader",
+"class": "HTerrainDataLoader",
+"language": "GDScript",
+"path": "res://addons/zylann.hterrain/hterrain_resource_loader.gd"
+}, {
+"base": "ResourceFormatSaver",
+"class": "HTerrainDataSaver",
+"language": "GDScript",
+"path": "res://addons/zylann.hterrain/hterrain_resource_saver.gd"
+}, {
 "base": "KinematicBody",
 "class": "Player",
 "language": "GDScript",
 "path": "res://scripts/player/player.gd"
 } ]
 _global_script_class_icons={
+"HTerrainDataLoader": "",
+"HTerrainDataSaver": "",
 "Player": ""
 }
 
@@ -30,6 +42,10 @@ utils="*res://scripts/utils.gd"
 preloader="*res://scripts/preloader.gd"
 game="*res://scripts/game.gd"
 chat_utils="*res://scripts/chat_utils.gd"
+
+[editor_plugins]
+
+enabled=PoolStringArray( "zylann.hterrain" )
 
 [rendering]
 

@@ -31,7 +31,7 @@ func _ready():
 	_multiplayer.disabled = true
 	if _host != "":
 		chat_utils._log(_log_dest, "Connecting to host: %s" % [_host])
-		var supported_protocols = PoolStringArray(["my-protocol2", "my-protocol", "binary"])
+		var supported_protocols = PoolStringArray(["arysum-protocol2", "arysum-protocol", "binary"])
 		_client.connect_to_url(_host, supported_protocols, multiplayer)
 
 func _on_Mode_item_selected( ID ):

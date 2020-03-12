@@ -88,7 +88,7 @@ func _ready():
 	
 	camera_target_initial = target.transform.origin
 	crosshair_color_initial = crosshair.modulate
-	fov_initial = camera.fov
+	#fov_initial = camera.fov
 	
 	# For facing direction
 	shape_orientation = shape.global_transform
@@ -134,19 +134,16 @@ func _ready():
 	get_node("timer_respawn").connect("timeout", self, "_on_timer_respawn_timeout")
 	
 	if is_network_master():
-		camera.current = true
-		crosshair.visible = true
+		pass
 
 func _init():
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-
+	#Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	pass
 func _physics_process(delta):
 	if is_network_master():
 		process_input(delta)
-		if !is_in_vehicle:
-			process_movement(delta)
-		rpc_unreliable("process_animations", is_in_vehicle, is_grounded, is_climbing, is_dancing, is_aiming, weapon_equipped, hvel.length(), camera_x_rot, camera_y_rot)
-		rpc("check_weapons")
+		process_movement(delta)
+		rpc_unreliable("process_animations", is_grounded, hvel.length(), camera_x_rot, camera_y_rot)
 		
 func _input(event):
 	if event is InputEventMouseMotion and Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
@@ -176,8 +173,8 @@ func process_input(delta):
 		input_movement_vector = input_movement_vector.normalized()
 
 		# Basis vectors are already normalized.
-		dir += -cam_xform.basis.z * input_movement_vector.y
-		dir += cam_xform.basis.x * input_movement_vector.x
+#		dir += -cam_xform.basis.z * input_movement_vector.y
+#		dir += cam_xform.basis.x * input_movement_vector.x
 	
 		# Sprinting
 		if Input.is_action_pressed("sprint"):
@@ -197,8 +194,8 @@ func process_input(delta):
 		AudioServer.get_bus_effect(0, 0).pitch_scale = 0.25
 	else:	
 		Engine.time_scale = 1
-		AudioServer.get_bus_effect(0, 0).pitch_scale = 1
-		AudioServer.set_bus_effect_enabled(0, 0, false)
+#		AudioServer.get_bus_effect(0, 0).pitch_scale = 1
+#		AudioServer.set_bus_effect_enabled(0, 0, false)
 		
 	
 	# Cursor

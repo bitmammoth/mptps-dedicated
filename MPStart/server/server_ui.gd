@@ -25,7 +25,7 @@ func _ready():
 	_destination.select(0)
 	var use_multiplayer = _multiplayer.pressed
 	_multiplayer.disabled = true
-	var supported_protocols = PoolStringArray(["my-protocol", "binary"])
+	var supported_protocols = PoolStringArray(["arysum-protocol", "binary"])
 	var port = int(_port)
 	if use_multiplayer:
 		_write_mode.disabled = true

@@ -6799,7 +6799,7 @@ shape = SubResource( 1 )
 transform = Transform( 0.3, 0, 0, 0, -4.88762e-08, -0.3, 0, 0.3, -4.88762e-08, 0, 4.37114e-08, -1 )
 
 [node name="root" type="Spatial" parent="shape/cube"]
-transform = Transform( 0.995604, 0.0448364, -0.0822396, -0.0385318, 0.996309, 0.0767086, 0.0853753, -0.0732026, 0.993656, -0.101137, -0.0259413, 0.22674 )
+transform = Transform( 0.994395, 0.0529995, -0.0914852, -0.047127, 0.996759, 0.0652005, 0.0946443, -0.0605236, 0.99367, -0.104668, -0.0276679, 0.171155 )
 
 [node name="mesh" type="MeshInstance" parent="shape/cube/root"]
 transform = Transform( 1, -9.77889e-09, 1.49012e-08, 1.39698e-09, 1, -3.72529e-09, 7.45058e-09, 0, 1, 0, 0, 0 )
@@ -6972,7 +6972,7 @@ bones/31/enabled = true
 bones/31/bound_children = [  ]
 
 [node name="bone_attachment" type="BoneAttachment" parent="shape/cube/root/skeleton"]
-transform = Transform( 0.487074, 0.0739945, 0.870219, 0.0311577, -0.997243, 0.0673545, 0.872806, -0.00569253, -0.488038, -1.27344, 3.0686, 0.278279 )
+transform = Transform( 0.476465, 0.0760632, 0.875896, 0.0330207, -0.997096, 0.0686248, 0.878575, -0.00377459, -0.477594, -1.28248, 3.08421, 0.268565 )
 bone_name = "hand_r"
 
 [node name="weapon" type="Spatial" parent="shape/cube/root/skeleton/bone_attachment"]
